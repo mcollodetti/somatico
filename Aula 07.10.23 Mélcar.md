@@ -51,20 +51,15 @@ brew install samtools
 samtools faidx chr9.fa
 ```
 
-## GATK4
+**GATK4**
 
-> Version: 4.2.2.0
+> Version: 4.2.2.0 original de https://gatk.broadinstitute.org/
 
-Genome Analysis Toolkit - Variant Discovery in High-Throughput Sequencing Data. https://gatk.broadinstitute.org/
+**GATK4 download e instalação**
 
-
-
-### GATK4 install
-
-GATK4 install Mac e Linux
-
+> em  Mac e Linux
 * Download
-
+* 
 ```bash
 wget -c https://github.com/broadinstitute/gatk/releases/download/4.2.2.0/gatk-4.2.2.0.zip
 ```
@@ -82,25 +77,22 @@ unzip gatk-4.2.2.0.zip
 ```
 
 
-### GATK4 .dict
-# Cria o dicionário do arquivo com informações gerais, por exemplo, nucleotide length (LN)
+**GATK4 dicionário**
+> Cria o dicionário do arquivo com informações gerais, por exemplo, nucleotide length (LN)
 
 ```bash
 ./gatk-4.2.2.0/gatk CreateSequenceDictionary -R hg19.fa -O hg19.dict
 ```
 
-
-
-### GATK4 intervals
-#Dispõe intervalos no arquivo, excluindo as bases substituídas por N
+**GATK4 intervals**
+>Dispõe intervalos no arquivo, excluindo as bases substituídas por N
 
 ```bash
 ./gatk-4.2.2.0/gatk ScatterIntervalsByNs -R hg19.fa -O hg19.interval_list -OT ACGT 
 ```
 
-
-## Mutect2
-# Chamada de variantes por comparação de haplótipos 
+**Mutect2**
+> Chamada de variantes por comparação de haplótipos 
 
 ### Mutect2 Tumor e Normal
 #Uso da referência hg19 para comparação, sinalizando que a amostra normal é a WP018 ou WP191
@@ -131,9 +123,9 @@ unzip gatk-4.2.2.0.zip
 
 
 
-### GetPileupSummaries
+**GetPileupSummaries**
 
-* GetPileupSummaries para tecido tumoral
+>GetPileupSummaries para tecido tumoral
 
 ```bash
 ./gatk-4.2.2.0/gatk GetPileupSummaries \
@@ -150,8 +142,7 @@ unzip gatk-4.2.2.0.zip
 	-L hg19.interval_list \
 	-O tumor_wp190.table
 ```
-
-* GetPileupSummaries para tecido normal
+>GetPileupSummaries para tecido normal
 
 ```bash
 ./gatk-4.2.2.0/gatk GetPileupSummaries \
@@ -170,11 +161,9 @@ unzip gatk-4.2.2.0.zip
 ```
 
 
-### CalculateContamination
+**CalculateContamination**
 
-Compara quantitativamente a frequência alélica de todas as variantes encontradas com a frequência alélica descrita pelo Gnomad, neste caso, gerando score e desvio padrão. 
-Para o CalculateContamination o score acima de 2 é contaminação. 
-Importante lembrar que estamos olhando só um gene e esse cálculo pode ser pouco eficiente pela região ser pequena
+>Compara quantitativamente a frequência alélica de todas as variantes encontradas com a frequência alélica descrita pelo Gnomad, neste caso, gerando score e desvio padrão. Para o CalculateContamination o score acima de 2 é contaminação. Importante lembrar que estamos olhando só um gene e esse cálculo pode ser pouco eficiente pela região ser pequena
 
 ```bash
 ./gatk-4.2.2.0/gatk CalculateContamination \
@@ -192,9 +181,9 @@ Importante lembrar que estamos olhando só um gene e esse cálculo pode ser pouc
 
 
 
-### FilterMutectCalls
+**FilterMutectCalls**
 
-Considera diversos fatores como qualidade da base, da read, do alinhamento, das regiões ao redor, se está presente nas duas fitas, se está presente só na amostra normal ou no tumor,
+>Considera diversos fatores como qualidade da base, da read, do alinhamento, das regiões ao redor, se está presente nas duas fitas, se está presente só na amostra normal ou no tumor,
 para determinar se é artefato ("artefact") ou variante ("PASS") 
 
 ```bash
