@@ -98,7 +98,7 @@ Samtools is a suite of programs for interacting with high-throughput sequencing 
 
 
 
-### samtools install
+### samtools install. Escolher um dos instaladores (todo terminal virtual é Ubuntu)
 
 * samtools install (Mac)
 
@@ -120,7 +120,7 @@ docker pull biocontainers/samtools
 
 
 
-### samtools faidx e index
+### samtools faidx e index (cria um dicionário do arquivo chr9.fa)
 
 * samtools faidx
 
@@ -180,7 +180,7 @@ unzip gatk-4.2.2.0.zip
 ### GATK4 intervals
 
 ```bash
-./gatk-4.2.2.0/gatk ScatterIntervalsByNs -R chr9.fa -O chr9.interval_list -OT ACGT
+./gatk-4.2.2.0/gatk ScatterIntervalsByNs -R chr9.fa -O chr9.interval_list -OT ACGT ##ACTG é a descrição de quais bases devem ser selecionadas no novo arquivo, o que exclui os Ns
 ```
 
 
@@ -196,16 +196,26 @@ Call somatic SNVs and indels via local assembly of haplotypes
 
 ```bash
 ./gatk-4.2.2.0/gatk Mutect2 \
-	-R chr9.fa \
-	-I tumor_JAK2.bam \
-	-I normal_JAK2.bam \
-	-normal WP044 \
-	--germline-resource af-only-gnomad-chr9.vcf.gz \
+	-R chr9.fa \ ##referencia a ser usada
+	-I tumor_JAK2.bam \ ##input 
+	-I normal_JAK2.bam \  ##outro input
+	-normal WP044 \  ## argumento "-normal" direciona qual a amostra normal
+	--germline-resource af-only-gnomad-chr9.vcf.gz \  ##frequencia alelica vinda do Gnomad para saber se é germinativo ou não
 	-O somatic.vcf.gz \
-	-L chr9.interval_list
+	-L chr9.interval_list  ##quais regiões devem ser consideradas para chamar variante
 ```
+##extra 
 
-
+```bash
+./gatk-4.2.2.0/gatk Mutect2 \
+	-R hg19.fa \
+	-I tumor_wp190.bam \ 
+	-I tumor_wp191.bam \ 
+	-normal WP191 \  
+	--germline-resource af-only-gnomad-chr13-chr19.vcf.gz \  
+	-O somatic_wp190.vcf.gz \
+	-L hg19.interval_list  
+```
 
 ## Calcular Contaminação
 
@@ -220,7 +230,7 @@ Tabulates pileup metrics for inferring contamination
 ```bash
 ./gatk-4.2.2.0/gatk GetPileupSummaries \
 	-I tumor_JAK2.bam \
-	-V af-only-gnomad-chr9.vcf.gz \
+	-V af-only-gnomad-chr9.vcf.gz \  (referência da frequência alélica)
 	-L chr9.interval_list \
 	-O tumor_JAK2.table
 ```
@@ -229,7 +239,7 @@ Tabulates pileup metrics for inferring contamination
 
 ```bash
 ./gatk-4.2.2.0/gatk GetPileupSummaries \
-	-I normal_JAK2.bam \
+	-I normal_JAK2.bam \  
 	-V af-only-gnomad-chr9.vcf.gz \
 	-L chr9.interval_list \
 	-O normal_JAK2.table
@@ -239,12 +249,12 @@ Tabulates pileup metrics for inferring contamination
 
 ### CalculateContamination
 
-Calculate the fraction of reads coming from cross-sample contamination
+Calculate the fraction of reads coming from cross-sample contamination (compara quantitativamente a frequência alélica de todas as variantes encontradas com a freq. alélica descrita pelo gnomad, neste caso, gerando score e desvio padrão. Para o CalculateContamination o score acima de 2 é contaminação. Importante lembrar que estamos olhando só um gene e esse cálculo pode ser pouco eficiente pela região ser pequena)
 
 ```bash
 ./gatk-4.2.2.0/gatk CalculateContamination \
-	-I tumor_JAK2.table \
-	-matched normal_JAK2.table \
+	-I tumor_JAK2.table \ ##arquivo de interesse 
+	-matched normal_JAK2.table \  #com qual será comparado
 	-O contamination.table
 ```
 
@@ -252,15 +262,17 @@ Calculate the fraction of reads coming from cross-sample contamination
 
 ### FilterMutectCalls
 
-Filter somatic SNVs and indels called by Mutect2
+Filter somatic SNVs and indels called by Mutect2 (considera diversos fatores como qualidade da base, da read, do alinhamento, das regiões ao redor, se está presente nas duas fitas, se está presente só na amostra normal ou no tumor para determinar se é artefato "artefact" ou variante mesmo "PASS") 
 
 ```bash
 ./gatk-4.2.2.0/gatk FilterMutectCalls \
 	-R chr9.fa \
-	-V somatic.vcf.gz \
-	--contamination-table contamination.table \
+	-V somatic.vcf.gz \  ##arquivo vcf a ser usado
+	--contamination-table contamination.table \  ##table de contaminação 
 	-O filtered.vcf.gz
 ```
+##* é interessante abrir o VCF, bam e bai das amostras no IGV para visualizar as regiões filtradas
+
 
 ## VEP ensembl - Anotação
 
