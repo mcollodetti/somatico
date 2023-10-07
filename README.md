@@ -139,14 +139,6 @@ Genome Analysis Toolkit - Variant Discovery in High-Throughput Sequencing Data. 
 
 ### GATK4 install
 
-GATK4 install Docker
-
-```bash
-docker pull broadinstitute/gatk:4.2.2.0
-```
-
-
-
 GATK4 install Mac e Linux
 
 * Download
