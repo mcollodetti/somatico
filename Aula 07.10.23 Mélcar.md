@@ -1,7 +1,7 @@
-# Análise Somática dos cromossomos 13 e 19 para as amostras wp017, wp018, wp190 e wp191 com GATK 4 Mutect2 Somático
+## Análise Somática com GATK 4 Mutect2 Somático dos cromossomos 13 e 19 para as amostras: ##
 
-- WP190 (tumor) e WP191 (normal)
-- WP017 (tumor) e WP018 (normal)
+WP190 (tumor) e WP191 (normal)
+WP017 (tumor) e WP018 (normal)
 
 
 **Download chr19**
@@ -25,33 +25,31 @@ zcat chr13.fa.gz chr19.fa.gz | sed -e "s/chr//g" > hg19.fa
 samtools faidx hg19.fa
 ```
 
-* Alterar nome do header: DE: >chr19 para >19 e >chr13 para >13
+**Alterar nome do header: DE: >chr19 para >19 e >chr13 para >13**
 > Essa alteração é necessária pois no BAM a referência não tinha `>chr` era apenas `>19`.
 
 ```bash
 zcat hg19.fa.gz | sed -e "s/chr//g" > hg19.fa
 ```
 
-## Verificar se alteração foi feita com o comando `head`
+**Verificar se alteração foi feita com o comando `head`**
 
 ```bash
 head hg19.fa
 ```
 
-### samtools install. 
+**samtools install**
 
 ```bash
 brew install samtools 
 ```
 
-### samtools faidx e index (cria um dicionário do arquivo .fa)
-
-* samtools faidx
+**samtools faidx e index**
+>cria um dicionário do arquivo .fa
 
 ```bash
 samtools faidx chr9.fa
 ```
-
 
 ## GATK4
 
